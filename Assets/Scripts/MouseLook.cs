@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class MouseLook : MonoBehaviour
 {
-    public float mouseSensitivity = 100f;
-    public Transform playerBody;
+    [SerializeField] private float mouseSensitivity = 100f;
+    [SerializeField] private Transform myCam;
     private float xRotation = 0f;
+    
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -24,13 +25,13 @@ public class MouseLook : MonoBehaviour
 
     void RotateCharLeftRight(float mouseX){
         // Rotate around Y-Axis of the player body
-        playerBody.Rotate(Vector3.up * mouseX);
+        transform.Rotate(Vector3.up * mouseX);
     }
 
     void RotateCharUpDown(float mouseY){
         // Rotate around X-Axis of camera
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
-        transform.localRotation = Quaternion.Euler(xRotation, 0, 0);
+        myCam.localRotation = Quaternion.Euler(xRotation, 0, 0);
     }
 }

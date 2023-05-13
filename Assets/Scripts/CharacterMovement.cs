@@ -6,6 +6,7 @@ public class CharacterMovement : MonoBehaviour
 {
     [SerializeField] private CharacterController controller;
     [SerializeField] private float speed = 10f;
+    [SerializeField] private float jumpHeight = 3f;
     [SerializeField] private float gravity = -9.81f;
     [SerializeField] private Transform groundChecker;
     [SerializeField] private float groundDistance = 0.4f;
@@ -17,13 +18,14 @@ public class CharacterMovement : MonoBehaviour
     void Update()
     {
         GroundedCheck();
+        JumpCheck();
 
         // Gather Keyboard inputs
         float xInput = Input.GetAxis("Horizontal");
         float zInput = Input.GetAxis("Vertical");
 
         MoveCharacter(xInput, zInput);
-        CalGravity();
+        ApplyGravity();
     }
 
     void MoveCharacter(float xInput, float zInput){
@@ -32,7 +34,7 @@ public class CharacterMovement : MonoBehaviour
         controller.Move(moveDir * speed * Time.deltaTime);
     }
 
-    void CalGravity(){
+    void ApplyGravity(){
         // y = 0.5*g * t^2
         velocity.y += gravity * (Time.deltaTime);
         controller.Move(velocity * Time.deltaTime);
@@ -43,6 +45,13 @@ public class CharacterMovement : MonoBehaviour
 
         if (isGrounded && velocity.y < 0){
             velocity.y = -2f; // constantly forcing the player falls
+        }
+    }
+
+    void JumpCheck(){
+        if (Input.GetButtonDown("Jump") && isGrounded){
+            // v = √h * -2 * g
+            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
     }
 }
