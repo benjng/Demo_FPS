@@ -5,24 +5,27 @@ public class Gun : MonoBehaviour
     [SerializeField] private float damage = 10f;
     [SerializeField] private float range = 100f;
     [SerializeField] private Camera myCam;
-    // private Ray ray;
 
     void Update()
     {
         if (Input.GetButtonDown("Fire1")) {
-            Debug.Log("LMB clicked");
             Shoot();
         }
     }
 
     void Shoot(){
         RaycastHit hit;
-        // ray = myCam.ScreenPointToRay(Input.mousePosition);
-        Physics.Raycast(myCam.transform.position, myCam.transform.forward, out hit, range);
+        if (Physics.Raycast(myCam.transform.position, myCam.transform.forward, out hit, range)){
+            Debug.Log(hit.collider.name);
+            Target target = hit.transform.GetComponent<Target>();
+            if (target != null){
+                target.TakeDamage(damage);
+            }
+        }
     }
 
     void OnDrawGizmos() {
         Gizmos.color = Color.red;
-        Gizmos.DrawLine(myCam.transform.position, myCam.transform.forward * Mathf.Infinity);
+        Gizmos.DrawLine(myCam.transform.position, myCam.transform.forward * range);
     }
 }
