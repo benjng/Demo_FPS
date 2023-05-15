@@ -5,6 +5,7 @@ using UnityEngine.Pool;
 [CreateAssetMenu(fileName = "Gun", menuName = "Guns/Gun", order = 0)]
 public class GunScriptableObject : ScriptableObject
 {
+    // public ImpactType ImpactType;
     public GunType Type;
     public string Name;
     public GameObject ModelPrefab;
@@ -14,16 +15,16 @@ public class GunScriptableObject : ScriptableObject
     public ShootConfigurationScriptableObject ShootConfig;
     public TrailConfigScriptableObject TrailConfig;
 
+    private ParticleSystem ShootSystem;
     private MonoBehaviour ActiveMonoBehaviour;
     private GameObject Model;
     private float LastShootTime;
-    private ParticleSystem ShootSystem;
     private ObjectPool<TrailRenderer> TrailPool;
 
     public void Shoot(){
         if (Time.time > ShootConfig.FireRate + LastShootTime){
             LastShootTime = Time.time;
-            ShootSystem.Play();
+            // ShootSystem.Play();
             Vector3 shootDirection = ShootSystem.transform.forward 
                 + new Vector3(
                     Random.Range(
@@ -81,14 +82,14 @@ public class GunScriptableObject : ScriptableObject
         instance.gameObject.SetActive(true);
         instance.transform.position = StartPoint;
         yield return null; // avoid position carry-over from last frame if reused
-
+        
         instance.emitting = true;
 
         // Move the TrailRenderer instance
         float distance = Vector3.Distance(StartPoint, EndPoint);
         float remainingDistance = distance;
 
-        // Loop till it reaches Endpoint
+        // Loop (Move) till it reaches Endpoint
         while(remainingDistance > 0){
             instance.transform.position = Vector3.Lerp(
                 StartPoint,
@@ -99,12 +100,25 @@ public class GunScriptableObject : ScriptableObject
             yield return null;
         }
 
-        instance.transform.position = EndPoint; // Make sure it reaches EndPoint when finish
+        // Finish
+        instance.transform.position = EndPoint; // Make sure it reaches EndPoint
+
+        // Visuals on impact
+        // if (Hit.collider != null){
+            // SurfaceManager.Instance.HandleImpact{
+            //     Hit.transform.gameObject,
+            //     EndPoint,
+            //     Hit.normal,
+            //     ImpactType,
+            //     0
+            // };
+        // }
 
         yield return new WaitForSeconds(TrailConfig.Duration);
         yield return null;
         instance.emitting = false;
         instance.gameObject.SetActive(false);
+        TrailPool.Release(instance);
     }
 
     // Create a trail instance

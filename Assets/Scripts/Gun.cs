@@ -20,6 +20,7 @@ public class Gun : MonoBehaviour
     }
 
     void Shoot(){
+        Debug.Log("SHOOTING with old gun");
         RaycastHit hit;
 
         // if hit
