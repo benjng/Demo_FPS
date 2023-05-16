@@ -17,5 +17,9 @@ MonoBehaviour:
   ModelPrefab: {fileID: 1511649899849448276, guid: e53f5367e1a0c8d4b89026320ca0feee, type: 3}
   SpawnPoint: {x: 0.31, y: -0.227, z: 0.457}
   SpawnRotation: {x: 0, y: 0, z: 0}
+  impactEffect: {fileID: 9184310304549611582, guid: 00b57aafc2e997f4093059af8b096bdd, type: 3}
+  damage: 1
+  range: 100
+  bulletForce: 120
   ShootConfig: {fileID: 11400000, guid: a05890e8ac831ee47867cfb5aa43d6fa, type: 2}
   TrailConfig: {fileID: 11400000, guid: 45569718f52a72044a28d421e463e4bf, type: 2}

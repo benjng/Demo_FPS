@@ -11,6 +11,7 @@ public class GunScriptableObject : ScriptableObject
     public GameObject ModelPrefab;
     public Vector3 SpawnPoint;
     public Vector3 SpawnRotation;
+    public GameObject impactEffect;
     public float damage = 1f;
     public float range = 100f;
     public float bulletForce = 50f;
@@ -55,6 +56,9 @@ public class GunScriptableObject : ScriptableObject
                     if (hit.rigidbody != null){
                         hit.rigidbody.AddForce(-hit.normal * bulletForce);
                     }
+
+                    GameObject impact = Instantiate(impactEffect, hit.point, Quaternion.LookRotation(hit.normal));
+                    Destroy(impact, 2f);
                 }
 
                 ActiveMonoBehaviour.StartCoroutine(
@@ -137,6 +141,7 @@ public class GunScriptableObject : ScriptableObject
     // Create a trail instance
     private TrailRenderer CreateTrail(){
         GameObject instance = new GameObject("BulletTrail");
+        instance.transform.SetParent(GameObject.Find("Trails").transform);
         TrailRenderer trail = instance.AddComponent<TrailRenderer>();
         trail.colorGradient = TrailConfig.Color;
         trail.material = TrailConfig.Material;
