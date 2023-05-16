@@ -11,7 +11,9 @@ public class GunScriptableObject : ScriptableObject
     public GameObject ModelPrefab;
     public Vector3 SpawnPoint;
     public Vector3 SpawnRotation;
-
+    public float damage = 1f;
+    public float range = 100f;
+    public float bulletForce = 50f;
     public ShootConfigurationScriptableObject ShootConfig;
     public TrailConfigScriptableObject TrailConfig;
 
@@ -24,7 +26,9 @@ public class GunScriptableObject : ScriptableObject
     public void Shoot(){
         if (Time.time > ShootConfig.FireRate + LastShootTime){
             LastShootTime = Time.time;
-            // ShootSystem.Play();
+            ShootSystem.Play();
+
+            // Spread the shoot
             Vector3 shootDirection = ShootSystem.transform.forward 
                 + new Vector3(
                     Random.Range(
@@ -43,7 +47,16 @@ public class GunScriptableObject : ScriptableObject
             shootDirection.Normalize();
 
             // if target hit (shoots from the particle effect towards shootDirection)
-            if (Physics.Raycast(ShootSystem.transform.position, shootDirection, out RaycastHit hit, float.MaxValue, ShootConfig.HitMask)){
+            if (Physics.Raycast(ShootSystem.transform.position, shootDirection, out RaycastHit hit, range, ShootConfig.HitMask)){
+
+                Target target = hit.transform.GetComponent<Target>();
+                if (target != null){
+                    target.TakeDamage(damage);
+                    if (hit.rigidbody != null){
+                        hit.rigidbody.AddForce(-hit.normal * bulletForce);
+                    }
+                }
+
                 ActiveMonoBehaviour.StartCoroutine(
                     PlayTrail( // Show the trail
                         ShootSystem.transform.position,
@@ -51,7 +64,7 @@ public class GunScriptableObject : ScriptableObject
                         hit // the target hit
                     )
                 );
-            } else { // if target missed
+            } else { // if no target is hit
                 ActiveMonoBehaviour.StartCoroutine(
                     PlayTrail( // Show the trail
                         ShootSystem.transform.position,
@@ -76,7 +89,7 @@ public class GunScriptableObject : ScriptableObject
         ShootSystem = Model.GetComponentInChildren<ParticleSystem>();
     }
 
-    // Trail movement rendering
+    // Trail rendering
     private IEnumerator PlayTrail(Vector3 StartPoint, Vector3 EndPoint, RaycastHit Hit){
         TrailRenderer instance = TrailPool.Get();
         instance.gameObject.SetActive(true);
@@ -89,7 +102,7 @@ public class GunScriptableObject : ScriptableObject
         float distance = Vector3.Distance(StartPoint, EndPoint);
         float remainingDistance = distance;
 
-        // Loop (Move) till it reaches Endpoint
+        // Loop (Move) till it reaches Endpoint using Lerp
         while(remainingDistance > 0){
             instance.transform.position = Vector3.Lerp(
                 StartPoint,

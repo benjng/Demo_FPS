@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 948038de1e535f6428a9a3f69f03d0d3, type: 3}
   m_Name: PistolTrailConfig
   m_EditorClassIdentifier: 
-  Material: {fileID: 10301, guid: 0000000000000000f000000000000000, type: 0}
+  Material: {fileID: 2100000, guid: 4b589845e2173714ea5d860c657951c0, type: 2}
   WidthCurve:
     serializedVersion: 2
     m_Curve:
@@ -37,7 +37,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  Duration: 0.2
+  Duration: 0.05
   MinVertexDistance: 0.1
   Color:
     serializedVersion: 2
@@ -69,4 +69,4 @@ MonoBehaviour:
     m_NumColorKeys: 2
     m_NumAlphaKeys: 2
   MissDistance: 100
-  SimulationSpeed: 100
+  SimulationSpeed: 200
